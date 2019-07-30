@@ -1,0 +1,187 @@
+<html>
+<head>
+    <title>1A2B猜數字遊戲</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script language="JavaScript">
+    var NN4=(document.layers);
+    var IE4=(document.all);
+    function showmsg(msg){self.status=msg; }
+    function chkSel(){ event.returnValue=false; }
+    if(NN4){ document.captureEvents(Event.MOUSEDOWN); }
+    document.onmousedown = chkBtnDown;
+    </script>
+    <script>
+        var AccessFlag  = false
+        var AccessCount = 0
+        var AccessTimer = 0
+        var AccessLogs  = '開始'
+        var RecordLogs  = ''
+        var AccessValue = ''
+        var AccessCheck = '----'
+        var AccessInput = ''
+        function PauseGame() {
+        if (AccessFlag) {
+            AccessLogs  = '---遊戲結束!---\r\n'
+            document.GAME.accLOGS.value  = AccessLogs
+            AccessFlag = false
+        }
+        }
+        function StartGame() {
+        if (AccessFlag == false) {
+            var AccessClock = new Date()
+            AccessTimer = AccessClock.getTime()
+            AccessFlag  = true
+            AccessCheck = '----'
+            AccessCount = 1
+            AccessInput = ''
+            AccessLogs  = '遊戲已進行，開始計時了!---\r\n'
+            RecordLogs  = '\r\n'
+            NumberCreat()
+            document.GAME.accLOGS.value  = AccessLogs
+            document.GAME.accCOUNT.value = AccessCount
+            document.GAME.accTIMER.value = AccessTimer
+            document.GAME.DISPLAY.value  = AccessCheck
+            document.GAME.LOADING.value  = AccessInput
+            document.GAME.LOADING.focus()
+            LoopTimer()
+        }
+        }
+        function LoopTimer() {
+        if (AccessFlag) {
+            var NowTimer = new Date()
+            var Now      = Math.round((NowTimer.getTime() - AccessTimer)/1000)
+            document.GAME.accTIMER.value = Now
+            setTimeout('LoopTimer()', 1000)
+        }
+        }
+        function NumberCreat() {
+            AccessValue = ''
+            var NumSeed = new Array()
+            for (var i=0; i<10; i++) { NumSeed[i]=i }
+            for (var i=0; i<8; i++) {
+                var j = Math.floor(Math.random() * 10)
+                while (NumSeed[j] == -1) { if (j==9) {j=0} else {j++}}
+                AccessValue += NumSeed[j]
+                NumSeed[j]   = -1
+            }
+        }
+        function KeyIn() {
+        if (AccessFlag){
+            AccessInput = '' + document.GAME.LOADING.value
+            if (AccessInput.length == 4){
+                if ((AccessInput[0] == AccessInput[1]) || (AccessInput[0] == AccessInput[2]) || (AccessInput[0] == AccessInput[3]) || (AccessInput[1] == AccessInput[2]) || (AccessInput[1] == AccessInput[3]) || (AccessInput[2] == AccessInput[3])) {
+                    document.GAME.LOADING.value = ''
+                } else {
+                    LoadCheck()
+                }
+            }
+        } else {
+            document.GAME.LOADING.value = ''
+        }
+        }
+        function LoadCheck() {
+        var AccessKey = AccessInput
+        AccessInput   = ''
+        var Value_A = 0
+        var Value_B = 0
+        for (var i=0; i<4; i++) {
+            if (AccessKey.charAt(i) == AccessValue .charAt(i)) { Value_A++ }
+        }
+        for (var i=0; i<4; i++) {
+            for (var j=0; j<4; j++) {
+                if (AccessKey.charAt(i) == AccessValue.charAt(j)) { Value_B++ }
+            }
+        }
+        Value_B -= Value_A
+        AccessCheck = '' + Value_A + 'A' + Value_B + 'B'
+        var WorkString = ''+AccessCount+'-'+AccessKey+'-'+AccessCheck+'-'+"第"+document.GAME.accTIMER.value+"秒"+'\r\n'
+        var KeepString = '在第'+document.GAME.accTIMER.value+'秒時-'+'猜第'+AccessCount+'次-'+'猜數'+AccessKey+ '-'+'結果'+AccessCheck+'\r\n'
+        if (Value_A == 4) {
+            WorkString  = '恭喜過關!\r\n' + WorkString
+            KeepString += '順利過關!\r\n'
+            KeepString += '總計猜' + AccessCount + '次, 花了' + document.GAME.accTIMER.value + '秒鐘!\r\n'
+            AccessFlag  = false
+        }
+        AccessCount++
+        AccessLogs = WorkString + AccessLogs
+        RecordLogs+= KeepString
+        document.GAME.accCOUNT.value = AccessCount
+        document.GAME.DISPLAY.value  = AccessCheck
+        document.GAME.LOADING.value  = AccessInput
+        document.GAME.accLOGS.value  = AccessLogs
+        }
+    </script>
+    <meta content="Microsoft FrontPage 5.0" name="GENERATOR">
+    <style>
+        .button {
+            background-color: #66DDFF; /* Green */
+            border: none;
+            color: #000000;
+            padding: 8px 42px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            margin: 1px 1px;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        .input {
+            border: 0;
+            background-color: #66DDFF;
+            text-align: right;
+        }
+        #input {
+            background-color: #66D8FF;
+            text-align: center;
+        }
+    </style>
+</head>
+<body bgproperties="fixed" bgcolor="#66CCFF" link="#66CCFF" vlink="#66CCFF" alink="#66CCFF" style="">
+    <div align="center">
+        <center>
+            <p><font face="Open Sans" size="18" color="#FFFFFF">1A2B猜數字遊戲</font></p>
+        </center>
+    </div>
+    <table border="0" width="100%" bgcolor="#66DDFF"><tbody>
+        <td width="100%"><form name="GAME">
+            <div align="center"><center>
+                <table border="0" bgcolor="#66DDFF"><tbody><tr>
+                    <td bgcolor="#66DDFF">
+                        <textarea cols="26" name="accLOGS" onfocus="document.GAME.accLOGS.blur()" rows="6" class="input" id="input">請先按開始[開始]鍵!!</textarea>
+                    </td>
+                    <td bgcolor="#66DDFF">
+                        第
+                        <input name="accCOUNT" onfocus="document.GAME.accCOUNT.blur()" size="4" value="0" class="input">
+                        次猜數
+                        <br>
+                        已
+                        <input name="accTIMER" onfocus="document.GAME.accTIMER.blur()" size="4" value="0" class="input"> 
+                        秒鐘了
+                        <p>結果
+                            <input name="DISPLAY" onfocus="document.GAME.DISPLAY.blur()" size="4" value="****" class="input" style="text-align: center;">
+                            顯示
+                            <br>
+                            輸入
+                            <input maxlength="4" name="LOADING" onchange="KeyIn()" size="8" class="input" id="input">
+                            <input maxlength="4" onchange="KeyIn()" size="8" class="input" id="input" type="button" value="輸入">
+                        </p>
+                    </td>
+              <td>
+              </td>
+            </tr>
+    </tbody>
+          </table>
+          </center></div>
+        </form>
+        <p align="center"><input onclick="StartGame()" type="button" value="開始" class="button">　 <input onclick="PauseGame()" type="button" value="停止" class="button"> </p></td>
+</tbody></table>
+<p align="center"><small>&nbsp;&nbsp;</small></p>
+<p align="center">　</p>
+<p align="center">　</p>
+<p align="center">　</p>
+<p align="center"><font color="#FFFFFF">Designed by CoCo</font></p>
+<p align="center"><font color="#FFFFFF">P.M.C@System © 2019</font></p>
+</body></html>
